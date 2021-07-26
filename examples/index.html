@@ -1,0 +1,142 @@
+<html >
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+<link rel="shortcut icon"  href="img/mainlogo.png" type="image/png"/>
+<meta name="theme-color" content="#000837"/>
+<meta name="title" content="CDraw Examples All"> <meta name="description" content="  Top "> <meta name="keywords" content=" games"> <meta name="robots" content="index, follow"> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> <meta name="language" content="English"> <meta name="revisit-after" content="1 days"> <meta name="author" content="aydavidgithere">
+<title > CDraw Examples- All</title>
+<noscript>Unfortunately, JavaScript must be enabled in your browser</noscript>
+    
+    
+    
+<head>
+<script src="http://localhost:1111/CodeHelps/src/CodeHelps.js"></script>
+<script src="http://localhost:1111/CDraw/src/CDraw.js"></script>
+<script src="http://localhost:1111/CDraw/src/CDrawf.styleBg.js"></script>
+<script 
+src="https://aydavidgithere.github.io/CodeHelps/src/CodeHelps.js"></script>
+<script src="https://aydavidgithere.github.io/CDraw/src/CDraw.js"></script>
+<script 
+src="https://aydavidgithere.github.io/CDraw/src/CDrawf.styleBg.js"></script>
+<script >
+function UseCDraw(){
+    drawRect();
+    drawShapes();
+    animateShapes();
+}
+</script>
+<script>
+function drawRect(){
+var a = document.getElementById("dc-drawRect");
+var b = a.getContext("2d");
+CDraw.setCanvasStyle(a, {type: "fill", alpha: 0, position: "static", pinToTop: true});   
+drawOn(b);
+function drawOn(b){ 
+let CW = a.width = 300;
+let CH = a.heigHt = 300;
+let CR = MHelp.resultantOf(CW, CH);
+let scene = new CDraw.useScene(b);
+let bgRect = new CDraw.rect(0, CW, 0, CH, "_yellow");
+scene.add(bgRect);
+
+update();
+function update(){
+    
+    requestAnimationFrame(update);
+}//EO updateFrame
+}   //EO drawOn
+}//EO drawRect
+</script>
+<script>
+function drawShapes(){
+var a = document.getElementById("dc-drawShapes");
+var b = a.getContext("2d");
+CDraw.setCanvasStyle(a, {type: "fill", alpha: 0, position: "static", pinToTop: true});   
+drawOn(b);
+function drawOn(b){ 
+let CW = a.width = 300;
+let CH = a.heigHt = 300;
+let CR = MHelp.resultantOf(CW, CH);
+let scene = new CDraw.useScene(b);
+let bgRect = new CDraw.rect(0, CW, 0, CH, "_indigo");
+scene.add(bgRect);
+//let circle = new CDraw.arc(x, y, radius, startAngle, endAngle, styling);
+let circle = new CDraw.arc(CW/2, CH/2, CW/5, 0, 6.3, "_red");
+scene.add(circle);
+let demo_text = new CDraw.text("+25pt Arial", "SampleText", CW/2, CH/2, "_green");
+scene.add(demo_text);
+
+
+update();
+function update(){
+    
+    requestAnimationFrame(update);
+}//EO updateFrame
+}   //EO drawOn
+}//EO drawShapes
+</script>
+<script>
+function animateShapes(){
+var a = document.getElementById("dc-animateShapes");
+var b = a.getContext("2d");
+CDraw.setCanvasStyle(a, {type: "fill", alpha: 0, position: "static", pinToTop: true});   
+drawOn(b);
+function drawOn(b){ 
+let CW = a.width = 300;
+let CH = a.heigHt = 300;
+let CR = MHelp.resultantOf(CW, CH);
+let scene = new CDraw.useScene(b);
+let bgRect = new CDraw.rect(0, CW, 0, CH, "_indigo");
+scene.add(bgRect);
+//let circle = new CDraw.arc(x, y, radius, startAngle, endAngle, styling);
+let circle = new CDraw.arc(CW/2, CH/2, CW/5, 0, 6.3, "_red");
+scene.add(circle);
+let demo_bar = new CDraw.sLine(CW/2, 0, CH/2-CH/3/2, CH/3,"white", 10)
+scene.add(demo_bar);
+let demo_text = new CDraw.text("+25pt Arial", "SampleText", CW/2, CH/2, "_green");
+scene.add(demo_text);
+
+
+
+update();
+function update(){
+    circle.x++;
+    demo_bar.rotation.rad+= 0.1;
+    demo_text.alpha -= 0.01;
+    if(demo_text.alpha<0)demo_text.alpha = 1;
+    
+    
+    requestAnimationFrame(update);
+}//EO updateFrame
+}   //EO drawOn
+}//EO d
+</script>
+
+
+
+
+</head>
+            
+            
+<body onload="UseCDraw()">
+    <header>
+        <h1>CDraw Demo Page</h1>
+    </header>
+    <section >
+        <h2>Draw Rectangle</h2>
+        <canvas id="dc-drawRect" class="demoCanvas" onload="drawRect()"></canvas>
+    </section>
+    <section>
+        <h2>Draw Shapes- Circles, Text</h2>
+        <canvas id="dc-drawShapes" class="demoCanvas" onload="drawShapes()"></canvas>
+    </section>
+    <section>
+        <h2>Animate Shapes- Translate, Rotate, Dim, </h2>
+        <canvas id="dc-animateShapes" class="demoCanvas" onload="animateShapes()"></canvas>
+    </section>
+</body>
+    
+    
+    
+    
+    
+</html>  

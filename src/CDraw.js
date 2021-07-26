@@ -11,8 +11,13 @@ class CDraw{
         [x, endX, y, endY, color, thick];
         this.lengthX = Math.abs(this.x-this.endX);
         this.breadthY = Math.abs(this.y-this.endY);
+        this.center = {};
         this.rotation = {rad: 0};
         this.alpha = 1;
+        this.updateProps = (B)=>{
+            this.center.x=this.x//+this.thick/2;
+            this.center.y=this.y+this.breadthY/2;
+        }//EO updateProps
         this.draw = (B)=>{      
         B.beginPath();     
         //CDraw.drawStyle.lW(this.thick);
@@ -20,13 +25,19 @@ class CDraw{
         B.moveTo(this.x, this.y); 
         B.lineTo(this.endX, this.endY); B.stroke();    
         B.closePath(); 
+        this.updateProps(B);
         }
     }
     static sLine= function(x, lengthX, y, breadthY, color, thick){
         [this.x, this.lengthX, this.y, this.breadthY, this.color,this.thick] =
         [x, lengthX, y, breadthY, color, thick];
-        this.rotation = {rad: 0}
+        this.center = {};
+        this.rotation = {rad: 0};
         this.alpha = 1;
+        this.updateProps = (B)=>{
+            this.center.x=this.x//+this.thick/2;
+            this.center.y=this.y+this.breadthY/2;
+        }//EO updateProps
         this.draw = (B)=>{   
         this.endX = this.x+this.lengthX; this.endY = this.y+this.breadthY
         B.beginPath();     
@@ -34,6 +45,7 @@ class CDraw{
         B.moveTo(this.x, this.y); 
         B.lineTo(this.endX, this.endY); B.stroke();    
         B.closePath();
+        this.updateProps()
         }
     }
     static text= function(fontStyle, text, x, y,styling, maxWidth=309000){
