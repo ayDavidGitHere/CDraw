@@ -12,7 +12,7 @@ class CDraw{
         this.lengthX = Math.abs(this.x-this.endX);
         this.breadthY = Math.abs(this.y-this.endY);
         this.center = {};
-        this.rotation = {rad: 0};
+        this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
         this.updateProps = (B)=>{
             this.center.x=this.x//+this.thick/2;
@@ -32,7 +32,7 @@ class CDraw{
         [this.x, this.lengthX, this.y, this.breadthY, this.color,this.thick] =
         [x, lengthX, y, breadthY, color, thick];
         this.center = {};
-        this.rotation = {rad: 0};
+        this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
         this.updateProps = (B)=>{
             this.center.x=this.x//+this.thick/2;
@@ -58,7 +58,7 @@ class CDraw{
         this.styling = styling;
         this.fontSize = this.font.replace(/\D/g, "");
         this.center = {}
-        this.rotation = {rad: 0}
+        this.rotation = {rad: 0, about:this.center}
         this.alpha = 1;
         this.updateProps = (B)=>{
             this.center.x=this.x+(-(this.adjustment[0]-1)*this.fontSize/2);
@@ -71,8 +71,7 @@ class CDraw{
         B.textBaseline =  this.textBaseline;
         B.font = this.font;
         var aDS = new CDraw.autoDrawStyle(B, this.styling);
-        this.color = aDS.color;
-        this.strokeWidth = aDS.strokeWidth;
+        this.color = aDS.color; this.strokeWidth = aDS.strokeWidth;
         aDS.call(()=>{
             B.strokeText(this.value, this.x, this.y, this.maxWidth); 
         },
@@ -86,12 +85,13 @@ class CDraw{
         this.x = x; this.y = y, this.radius = r; this.startAngle= startAngle;
         this.endAngle = endAngle; this.styling = styling; this.type = "arc";
         this.center = {};
-        this.rotation = {rad: 0}
+        this.rotation = {rad: 0, about:this.center}
         this.alpha = 1;
         this.updateProps = (B)=>{
             this.center.x = this.x;
             this.center.y = this.y;
         }
+        
         this.draw = (B)=>{   
             B.beginPath();
             B.arc(this.x, this.y, this.radius, this.startAngle,this.endAngle);
@@ -107,7 +107,7 @@ class CDraw{
         this.y = y;   this.breadthY = breadthY;
         this.styling = styling;
         this.center = {};
-        this.rotation = {rad: 0};
+        this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
         this.updateProps = (B)=>{
             this.center.x=this.x+this.lengthX/2;
@@ -144,7 +144,9 @@ class CDraw{
             B.strokeStyle = this.color;
             this.type="stroke"; 
        }
-       this.call = (strokeCallback=function(){ B.stroke() }, fillCallback=function(){ B.fill() })=>{
+       this.call = (strokeCallback=function(){ B.stroke() },
+                    fillCallback=function(){ B.fill() }
+                    )=>{
            if(this.type == "fill"){ fillCallback(); }
            if(this.type == "stroke"){ strokeCallback(); }
        }
@@ -157,15 +159,12 @@ class CDraw{
          tA: function(B, tA){   B.textAlign = tA ;      },
          tB: function(B, tB){   B.textBaseline = tB;    }
     }
-    static clearCanvas= function(B){
-        B.clearRect(0, 0, B.canvas.width, B.canvas.height)
-    }
     //Transform
     static rotate= function(child, B){
         if(child.rotation.rad!=0 && child.center!=undefined){
-            B.translate(child.center.x, child.center.y);
+            B.translate(child.rotation.about.x, child.rotation.about.y);
             B.rotate(child.rotation.rad);
-            B.translate(-child.center.x, -child.center.y)
+            B.translate(-child.rotation.about.x, -child.rotation.about.y);
         }
     }
     static stylesAndComposites = {
@@ -227,8 +226,11 @@ class CDraw{
         }// EO getOpaquePixels
     
     }//EO useScene
+    static clearCanvas= function(B){
+        B.clearRect(0, 0, B.canvas.width, B.canvas.height)
+    }
     static setCanvasStyle= function(a, settings){
-        if(settings.type == "fill"){
+        if(settings.type == "background"){
             a.width = a.parentNode.scrollWidth;
             a.height = a.parentNode.scrollHeight;
             //bad fixrs
@@ -236,16 +238,18 @@ class CDraw{
             a.parentNode.style.overflow =
             (a.parentNode!=document.body?"hidden":0);
         }
-
         a.style.position = settings.position;
-        if(settings.pinToTop && a.style.position == "absolute"){
+        if(settings.pinToTop ){
+            if( a.style.position == "absolute" ||
+            a.style.position == "relative"){
             a.style.top = 0+"%";
             a.style.left = 0+"%";
-        }
-        if(settings.pinToTop && a.style.position == "static"){
+            }
+            if( a.style.position == "static"){
             a.style.marginLeft = 0;
             a.style.marginTop = 0;
-        }
+            }
+        }//EO if
     }
     
 
