@@ -8,7 +8,9 @@ allTags.map((tagAtIndex, tagIndex)=>{
     let call = tagAtIndex.getAttribute("call");
     //console.log(ObjHelp.getPropsOf(tagAtIndex))
     let settings = {}; 
-    ["bgColor","shapeColor","shapeFactor","shapeType","shapeSize","lineColor"].map((attr)=>{
+    ["bgColor","shapeColor",
+     "shapeFactor","shapeType",
+     "shapeSize","lineColor"].map((attr)=>{
         let attrVal = tagAtIndex.getAttribute(attr);
         settings[attr] = attrVal;
     });
@@ -26,10 +28,9 @@ CDrawf.styleBg = function(container = null, canvasStyle={fillContainer: true}){
     new CDraw.init(a, b);//now useless
     
     container.prepend(a);
-    a.style.position = "absolute";
     if(canvasStyle.fillContainer){    
         CDraw.setCanvasStyle(a, {
-            type: "fill", alpha: 0, position: "absolute", pinToTop: true
+            type: "background", alpha: 0, position: "absolute", pinToTop: true
         });
     }
     
