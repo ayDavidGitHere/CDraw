@@ -130,6 +130,9 @@ class CDraw{
         this.updateProps(B);
         }//EO draw
     }
+    static group = function(){
+        
+    }
     static autoDrawStyle= function(B, styling){
        var spl;
        if(typeof styling === "string") spl = styling.split("_");
@@ -170,7 +173,6 @@ class CDraw{
     static stylesAndComposites = {
         draw: function(child, B){
             B.globalAlpha = child.alpha;
-            
         },
         restore: function(B){
             B.globalAlpha = 1;
