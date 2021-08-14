@@ -14,6 +14,7 @@ class CDraw{
         this.center = {};
         this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
+        this.GCParams = {shadow: [0, 0, "transparent", 0]};
         this.updateProps = (B)=>{
             this.center.x=this.x//+this.thick/2;
             this.center.y=this.y+this.breadthY/2;
@@ -34,6 +35,7 @@ class CDraw{
         this.center = {};
         this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
+        this.GCParams = {shadow: [0, 0, "transparent", 0]};
         this.updateProps = (B)=>{
             this.center.x=this.x//+this.thick/2;
             this.center.y=this.y+this.breadthY/2;
@@ -60,6 +62,7 @@ class CDraw{
         this.center = {}
         this.rotation = {rad: 0, about:this.center}
         this.alpha = 1;
+        this.GCParams = {shadow: [0, 0, "transparent", 0]};
         this.updateProps = (B)=>{
             this.center.x=this.x+(-(this.adjustment[0]-1)*this.fontSize/2);
             this.center.y=this.y-(-(this.adjustment[1]-1)*this.fontSize/2);
@@ -67,7 +70,7 @@ class CDraw{
         
         
         this.draw = (B)=>{   
-        B.textAlign = this.textAlign;
+        B.textAlign = this.textAlign; 
         B.textBaseline =  this.textBaseline;
         B.font = this.font;
         var aDS = new CDraw.autoDrawStyle(B, this.styling);
@@ -87,10 +90,11 @@ class CDraw{
         this.center = {};
         this.rotation = {rad: 0, about:this.center}
         this.alpha = 1;
+        this.GCParams = {shadow: [0, 0, "transparent", 0]};
         this.updateProps = (B)=>{
-            this.center.x = this.x;
-            this.center.y = this.y;
+            this.center.x = this.x; this.center.y = this.y;
         }
+        
         
         this.draw = (B)=>{   
             B.beginPath();
@@ -109,6 +113,7 @@ class CDraw{
         this.center = {};
         this.rotation = {rad: 0, about:this.center};
         this.alpha = 1;
+        this.GCParams = {shadow: [0, 0, "transparent", 0]};
         this.updateProps = (B)=>{
             this.center.x=this.x+this.lengthX/2;
             this.center.y=this.y+this.breadthY/2;
@@ -170,18 +175,29 @@ class CDraw{
             B.translate(-child.rotation.about.x, -child.rotation.about.y);
         }
     }
+    static makeShadow = function(B, params){
+        [B.shadowColor, B.shadowOffsetX, B.shadowOffsetY, B.shadowBlur] =
+        [params[2], params[0], params[1], params[3]];
+    }
     static stylesAndComposites = {
         draw: function(child, B){
-            B.globalAlpha = child.alpha;
+            B.globalAlpha = child.alpha; 
+            CDraw.makeShadow(B, child.GCParams.shadow);
         },
         restore: function(B){
-            B.globalAlpha = 1;
+            B.globalAlpha = 1;  
+            CDraw.makeShadow(B, [0, 0, "transparent", 0])
         }
     }
     static useScene= function(context){
         ["rect", "text", "arc", "line", "sLine"].map((object)=>{
             //CDraw[object].prototype.rotation = {rad:0};
-            CDraw[object].prototype.shapeName = object; 
+            CDraw[object].prototype.shapeName = object;
+            /*
+            CDraw[object].prototype.GCParams = {
+                shadow: [0, 0, "transparent", 0],
+            }
+            */
         })
         this.B = context;
         this.allChildren = [];
