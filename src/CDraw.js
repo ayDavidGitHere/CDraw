@@ -175,18 +175,18 @@ class CDraw{
             B.translate(-child.rotation.about.x, -child.rotation.about.y);
         }
     }
-    static makeShadow = function(B, params){
+    static shadow = function(B, params){
         [B.shadowColor, B.shadowOffsetX, B.shadowOffsetY, B.shadowBlur] =
         [params[2], params[0], params[1], params[3]];
     }
     static stylesAndComposites = {
         draw: function(child, B){
             B.globalAlpha = child.alpha; 
-            CDraw.makeShadow(B, child.GCParams.shadow);
+            CDraw.shadow(B, child.GCParams.shadow);
         },
         restore: function(B){
             B.globalAlpha = 1;  
-            CDraw.makeShadow(B, [0, 0, "transparent", 0])
+            CDraw.shadow(B, [0, 0, "transparent", 0])
         }
     }
     static useScene= function(context){
