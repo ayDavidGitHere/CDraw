@@ -67,15 +67,14 @@ class CDraw{
             this.center.x=this.x+(-(this.adjustment[0]-1)*this.fontSize/2);
             this.center.y=this.y-(-(this.adjustment[1]-1)*this.fontSize/2);
         }//EO updateProps
+        let autoStyle = new CDraw.autoStyle(this.styling, this);
         
         
         this.draw = (B)=>{   
         B.textAlign = this.textAlign; 
         B.textBaseline =  this.textBaseline;
         B.font = this.font;
-        var aDS = new CDraw.autoDrawStyle(B, this.styling);
-        this.color = aDS.color; this.strokeWidth = aDS.strokeWidth;
-        aDS.call(()=>{
+        autoStyle.call(B, ()=>{
             B.strokeText(this.value, this.x, this.y, this.maxWidth); 
         },
         ()=>{
@@ -118,14 +117,11 @@ class CDraw{
             this.center.x=this.x+this.lengthX/2;
             this.center.y=this.y+this.breadthY/2;
         }//EO updateProps
-        
+        let autoStyle = new CDraw.autoStyle(this.styling, this);
         
         this.draw = (B)=>{      
             B.beginPath();
-            var aDS = new CDraw.autoDrawStyle(B, this.styling);
-            this.color = aDS.color;
-            this.strokeWidth = aDS.strokeWidth;
-            aDS.call(()=>{
+            autoStyle.call(B, ()=>{
             B.strokeRect(this.x, this.y, this.lengthX, this.breadthY );
             },
             ()=>{
@@ -137,6 +133,33 @@ class CDraw{
     }
     static group = function(){
         
+    }
+    static autoStyle= function(styling, object){
+       var spl;
+       if(typeof styling === "string")spl = styling.split("_");
+       else spl = styling;
+       this.object = object;
+       this.color = object.color = spl[1]; 
+       this.strokeWidth = object.strokeWidth = Number(spl[0]);
+       this.styleType = "FILL";
+       if(spl[0] == "") this.styleType = "FILL";    
+       if(spl[0] != "") this.styleType = "STROKE";
+       this.call = (B, 
+        strokeCallback=function(){B.stroke();},
+        fillCallback=function(){B.fill();}
+        )=>{
+           this.color = this.object.color
+           this.strokeWidth = this.object.strokeWidth
+           if(this.styleType=="FILL"){ 
+               B.fillStyle = this.color; fillCallback(); 
+           }
+           if(this.styleType =="STROKE"){
+               B.lineWidth = this.strokeWidth; 
+               B.strokeStyle = this.color;
+               strokeCallback(); 
+           }
+       }//EO call
+       
     }
     static autoDrawStyle= function(B, styling){
        var spl;
