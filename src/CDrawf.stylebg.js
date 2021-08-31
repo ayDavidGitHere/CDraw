@@ -27,12 +27,39 @@ CDrawf.styleBg = function(container = null, canvasStyle={fillContainer: true}){
     var b = a.getContext("2d");
     new CDraw.init(a, b);//now useless
     
+    
+    
+    
+    
+    /*
+    * old and bad backgrounder
+    * pro-- good performance
+    * con-- picks wrong background
     container.prepend(a);
     if(canvasStyle.fillContainer){    
         CDraw.setCanvasStyle(a, {
             type: "background", alpha: 0, position: "absolute", pinToTop: true
         });
     }
+    */
+    
+    
+    
+    /**
+     * New backgrounder, uses backgroundImage
+     * pro-- correct background
+     * con-- bad -performance
+     */
+    a.width = container.scrollWidth;
+    a.height = container.scrollHeight;
+    let PlayInContainer = function(){
+        container.style.backgroundImage = "url("+a.toDataURL()+")";
+        requestAnimationFrame(PlayInContainer);
+    }//EO PlayInContainer
+    PlayInContainer();
+    
+    
+    
     
     
     
@@ -44,10 +71,8 @@ this.dotsConnect = function(changes={}){
     lineColor: "white",
     shapeFactor: 1, dotsAlpha: 0.8,
     shapeSize: 10, uniformRadius: false,
-    shapeType: "circle"
-    }
-    for (var prop in changes) {
-        if (changes.hasOwnProperty(prop)) { settings[prop] = changes[prop]; }
+    shapeType: "circle",
+    ...changes,
     }
     //correction
     if(settings.shapeType != "square" && settings.shapeType != "circle"){
@@ -55,6 +80,7 @@ this.dotsConnect = function(changes={}){
     }
     settings.shapeFactor = Number(settings.shapeFactor);
     settings.shapeSize = Number(settings.shapeSize);
+    settings.shapeColor = settings.shapeColor.split("||")[0]
     
     
     let CW = a.width;
@@ -94,7 +120,7 @@ this.dotsConnect = function(changes={}){
     }
     updateFrame(); 
     
-    function updateFrame(){
+    function updateFrame(){ 
     dots.map((dot, ind)=>{
         dot.closests = []
         dots.map((others, othersInd)=>{
@@ -123,9 +149,9 @@ this.dotsConnect = function(changes={}){
         if(dot.x == CW*0.333||dot.x == 0 || dot.y==0 || dot.y == CH*0.333)dot.moveDir *= -1; 
     });
         
-        
     requestAnimationFrame(updateFrame)
     }//EO updateFrame
+    
     
     this.settings = settings;  
 }//EO dotsConnect
@@ -137,7 +163,7 @@ this.dotsConnect = function(changes={}){
 this.popCircles = function(changes={}){    
     let settings = {    
     bgColor: "rgba(230, 20, 78, 0.8)",
-    shapeColor: "rgba(250, 250, 250, 0.5)",
+    shapeColor: "rgba(250, 250, 250, 0.5)||red",
     lineColor: "white",
     shapeFactor: 1, dotsAlpha: 0.8,
     shapeSize: 10, uniformRadius: false,
@@ -149,6 +175,9 @@ this.popCircles = function(changes={}){
     if(settings.shapeType != "square" && settings.shapeType != "circle"){
         settings.shapeType = "circle"
     }
+    settings.shapeColors = settings.shapeColor.split("||");
+    
+    
     
     let CW = a.width;
     let CH = a.height;
@@ -161,6 +190,7 @@ this.popCircles = function(changes={}){
     settings.dotsLength = Math.floor( 5+CR/50*settings.shapeFactor ); 
     let dots = new Array(settings.dotsLength);
     for(let ind=0; dots.length>ind; ind++){
+        let shapeColor = settings.shapeColors[Math.floor(Math.random()*settings.shapeColors.length)];
         if(settings.shapeType == "circle"){
         dots[ind] = new CDraw.arc(
             CW/10*MHelp.randOpt(1, 2, 3, 4, 5, 6, 7, 8, 9),
@@ -168,7 +198,7 @@ this.popCircles = function(changes={}){
             CR/3000*
             (settings.shapeSize+settings.shapeSize/MHelp.randOpt(-2,+2,+2.5)),
             0, 6.3,
-            "_"+settings.shapeColor
+            "_"+shapeColor
         );
         }
         if(settings.shapeType == "square"){
@@ -177,7 +207,7 @@ this.popCircles = function(changes={}){
             CR/3000*settings.shapeSize*2,
             CH/10*MHelp.randOpt(1, 2, 3, 4, 5, 6, 7, 8, 9)-settings.shapeSize,
             CR/3000*settings.shapeSize*2,
-            "_"+settings.shapeColor
+            "_"+shapeColor
             );
         }
         dots[ind].speedRadius = Math.random();
