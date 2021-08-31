@@ -85,7 +85,8 @@ class CDraw{
     }
     static arc= function(x, y, r, startAngle, endAngle, styling){
         this.x = x; this.y = y, this.radius = r; this.startAngle= startAngle;
-        this.endAngle = endAngle; this.styling = styling; this.type = "arc";
+        this.endAngle = endAngle; 
+        this.styling = styling; this.type = "arc";
         this.center = {};
         this.rotation = {rad: 0, about:this.center}
         this.alpha = 1;
@@ -93,14 +94,12 @@ class CDraw{
         this.updateProps = (B)=>{
             this.center.x = this.x; this.center.y = this.y;
         }
-        
+        let autoStyle = new CDraw.autoStyle(this.styling, this);
         
         this.draw = (B)=>{   
             B.beginPath();
             B.arc(this.x, this.y, this.radius, this.startAngle,this.endAngle);
-            var aDS = new CDraw.autoDrawStyle(B, this.styling);
-            this.color = aDS.color; this.strokeWidth = aDS.strokeWidth;
-            aDS.call();
+            autoStyle.call(B);
             B.closePath();
             this.updateProps(B);
         }
@@ -239,12 +238,13 @@ class CDraw{
         }
         animFrame();
         this.add = (child)=>{
-            child.indexInScene = this.allChildren.length
+            child.indexInScene = this.allChildren.length;
             this.allChildren.push(child);
-            //console.log("add")
+            //console.log(this.allChildren[child.indexInScene].indexInScene);
         }
-        this.remove = (child)=>{
-            this.allChildren.splice(child.indexInScene, 1);
+        this.remove = (child)=>{ 
+            //child.indexInScene = this.allChildren.indexOf(child);
+            this.allChildren.splice(child.indexInScene,1);
         }
         this.getOpaquePixels= (B, startX, limitX, startY, limitY, callback)=>{
         var arr_opaq_pos = [];  
