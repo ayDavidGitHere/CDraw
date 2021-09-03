@@ -19,10 +19,11 @@ class CDraw{
             this.center.x=this.x//+this.thick/2;
             this.center.y=this.y+this.breadthY/2;
         }//EO updateProps
+        let autoStyle = new CDraw.autoStyle(this.thick+"_"+this.color, this);
+        
         this.draw = (B)=>{      
         B.beginPath();     
-        //CDraw.drawStyle.lW(this.thick);
-        new CDraw.autoDrawStyle(B, this.thick+"_"+this.color).call();
+        autoStyle.call(B);
         B.moveTo(this.x, this.y); 
         B.lineTo(this.endX, this.endY); B.stroke();    
         B.closePath(); 
@@ -40,10 +41,12 @@ class CDraw{
             this.center.x=this.x//+this.thick/2;
             this.center.y=this.y+this.breadthY/2;
         }//EO updateProps
+        let autoStyle = new CDraw.autoStyle(this.thick+"_"+this.color, this);
+        
         this.draw = (B)=>{   
         this.endX = this.x+this.lengthX; this.endY = this.y+this.breadthY
         B.beginPath();     
-        new CDraw.autoDrawStyle(B, this.thick+"_"+this.color).call();
+        autoStyle.call(B);
         B.moveTo(this.x, this.y); 
         B.lineTo(this.endX, this.endY); B.stroke();    
         B.closePath();
@@ -160,35 +163,6 @@ class CDraw{
        }//EO call
        
     }
-    static autoDrawStyle= function(B, styling){
-       var spl;
-       if(typeof styling === "string") spl = styling.split("_");
-       else{spl = styling}
-       this.color = spl[1]; 
-       this.strokeWidth = Number(spl[0]); 
-       if(spl[0] == ""){    
-            B.fillStyle = this.color;
-            this.type="fill";  }
-       if(spl[0] != ""){    
-            B.lineWidth = this.strokeWidth; 
-            B.strokeStyle = this.color;
-            this.type="stroke"; 
-       }
-       this.call = (strokeCallback=function(){ B.stroke() },
-                    fillCallback=function(){ B.fill() }
-                    )=>{
-           if(this.type == "fill"){ fillCallback(); }
-           if(this.type == "stroke"){ strokeCallback(); }
-       }
-       
-    }
-    static drawStyle= {
-         lW: function(B, lW){     B.lineWidth = lW;   },
-         gA: function(B, gAfa=1){     B.globalAlpha = gAfa;  },
-         lC: function(B, lC){   B.lineCap = ""+lC;       },
-         tA: function(B, tA){   B.textAlign = tA ;      },
-         tB: function(B, tB){   B.textBaseline = tB;    }
-    }
     //Transform
     static rotate= function(child, B){
         if(child.rotation.rad!=0 && child.center!=undefined){
@@ -205,10 +179,12 @@ class CDraw{
         draw: function(child, B){
             B.globalAlpha = child.alpha; 
             CDraw.shadow(B, child.GCParams.shadow);
+            B.globalCompositeOperation = (child.GCParams.op!=undefined?child.GCParams.op:"source-over");
         },
         restore: function(B){
             B.globalAlpha = 1;  
-            CDraw.shadow(B, [0, 0, "transparent", 0])
+            CDraw.shadow(B, [0, 0, "transparent", 0]);
+            B.globalCompositeOperation = "source-over";
         }
     }
     static useScene= function(context){
